@@ -6,5 +6,5 @@
     "verbatimModuleSyntax":true,"moduleDetection":"force","noEmit":true,
     "jsx":"react-jsx","strict":true
   },
-  "include":["src"]
+  "types":["vite/client"],"include":["src"]
 }
