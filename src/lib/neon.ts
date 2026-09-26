@@ -3,7 +3,7 @@ import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapter
 
 const authUrl =
   import.meta.env.VITE_NEON_AUTH_URL ||
-  "https://ep-little-meadow-b3t2gsi8.ap-southeast-1.aws.neon.tech/neondb/auth";
+  "https://ep-little-meadow-b3t2gsi8.neonauth.c-4.ap-southeast-1.aws.neon.tech/neondb/auth";
 
 const dataApiUrl =
   import.meta.env.VITE_NEON_DATA_API_URL ||
