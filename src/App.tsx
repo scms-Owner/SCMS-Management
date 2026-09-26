@@ -1,5 +1,7 @@
 import {Routes,Route} from "react-router-dom";
 import Layout from "./components/Layout";
+import AuthGate from "./components/AuthGate";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ModulePage from "./pages/ModulePage";
 import Workers from "./pages/Workers";
@@ -17,9 +19,10 @@ const modules:Record<string,{title:string;description:string;items:string[]}>={
 "/expenses":{title:"Expenses",description:"Project and company cash expenses.",items:["Project expenses","Other expenses","Expense categories","Cash ledger integration","Audit trail"]},
 "/corrections":{title:"Correction Requests",description:"Controlled workflow for records submitted by foremen.",items:["Requested record and change","Reason","Admin approval / rejection","Original value preservation","Audit history"]},
 "/audit":{title:"Audit Log",description:"Traceable history of operational and financial changes.",items:["Creator and timestamp","Original values","Correction requester","Approver / rejector","Final change history"]},
-"/settings":{title:"Settings",description:"System configuration and future authentication / permission controls.",items:["Roles and permissions","Company settings","Work units","Project statuses","Notification preferences"]}
+"/settings":{title:"Settings",description:"System configuration and permission controls.",items:["Roles and permissions","Company settings","Work units","Project statuses","Notification preferences"]}
 };
-export default function App(){return <Layout><Routes>
+
+function Protected(){return <AuthGate><Layout><Routes>
 <Route path="/" element={<Dashboard/>}/>
 <Route path="/workers" element={<Workers/>}/>
 <Route path="/clients" element={<Clients/>}/>
@@ -32,4 +35,6 @@ export default function App(){return <Layout><Routes>
 <Route path="/portal/foreman" element={<ForemanPortal/>}/>
 <Route path="/portal/worker" element={<WorkerPortal/>}/>
 <Route path="/portal/client" element={<ClientPortal/>}/>
-</Routes></Layout>}
+</Routes></Layout></AuthGate>}
+
+export default function App(){return <Routes><Route path="/login" element={<Login/>}/><Route path="*" element={<Protected/>}/></Routes>}
