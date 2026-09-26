@@ -1,0 +1,58 @@
+import { FormEvent, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { neon } from "../lib/neon";
+
+export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    const result = mode === "signin"
+      ? await neon.auth.signIn.email({ email, password })
+      : await neon.auth.signUp.email({ email, password, name });
+
+    if (result.error) {
+      setError(result.error.message || "Authentication failed.");
+      setBusy(false);
+      return;
+    }
+
+    const from = (location.state as { from?: string } | null)?.from || "/";
+    navigate(from, { replace: true });
+    setBusy(false);
+  }
+
+  return <main className="auth-page">
+    <section className="auth-visual">
+      <div className="auth-brand"><span className="brand-mark">SC</span><div><strong>SCMS</strong><small>CONSTRUCTION ERP</small></div></div>
+      <div className="auth-copy"><span className="eyebrow">SOHANUR CONSTRUCTION & MANPOWER SOLUTION</span><h1>Construction operations.<br/><em>Under control.</em></h1><p>Projects, manpower, hajira, measurements, billing and cash — in one secure management system.</p></div>
+      <div className="auth-points"><span>01 · Project control</span><span>02 · Worker earnings</span><span>03 · Cash accountability</span></div>
+    </section>
+    <section className="auth-panel">
+      <div className="auth-card">
+        <span className="eyebrow">{mode === "signin" ? "SECURE LOGIN" : "NEW USER"}</span>
+        <h2>{mode === "signin" ? "Welcome back" : "Create your account"}</h2>
+        <p>{mode === "signin" ? "Sign in to continue to SCMS Management." : "Create an account. An Admin must assign your SCMS role before restricted data becomes available."}</p>
+        <form onSubmit={submit}>
+          {mode === "signup" && <label>Full name<input value={name} onChange={e=>setName(e.target.value)} required placeholder="Your name"/></label>}
+          <label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required placeholder="name@example.com"/></label>
+          <label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={8} placeholder="At least 8 characters"/></label>
+          {error && <div className="form-error">{error}</div>}
+          <button className="primary-button" disabled={busy}>{busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}</button>
+        </form>
+        <button className="text-button" onClick={()=>{setMode(mode==="signin"?"signup":"signin");setError("")}}>
+          {mode === "signin" ? "Need an account? Create one" : "Already registered? Sign in"}
+        </button>
+      </div>
+    </section>
+  </main>;
+}
