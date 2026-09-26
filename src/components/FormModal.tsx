@@ -1,0 +1,4 @@
+import {ReactNode} from "react";
+export default function FormModal({title,onClose,onSubmit,children,busy=false}: {title:string;onClose:()=>void;onSubmit:(e:any)=>void;children:ReactNode;busy?:boolean}){
+ return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><div className="modal-card"><div className="modal-head"><div><span className="eyebrow">SCMS DATA ENTRY</span><h2>{title}</h2></div><button type="button" className="icon-btn" onClick={onClose}>×</button></div><form onSubmit={onSubmit}><div className="form-grid">{children}</div><div className="modal-actions"><button type="button" className="secondary-btn" onClick={onClose}>Cancel</button><button className="primary-btn" disabled={busy}>{busy?"Saving…":"Save"}</button></div></form></div></div>
+}
