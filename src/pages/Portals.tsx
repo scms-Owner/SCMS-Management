@@ -11,7 +11,7 @@ export function ForemanPortal(){
 }
 export function WorkerPortal(){
  const [profile,setProfile]=useState<any>(null),[rows,setRows]=useState<any[]>([]),[due,setDue]=useState<any>(null);
- useEffect(()=>{(async()=>{const p=await neon.from("current_profile").select("*");const me=p.data?.[0];setProfile(me);if(me?.worker_id){const [a,d]=await Promise.all([neon.from("attendance").select("*").eq("worker_id",me.worker_id).order("attendance_date",{ascending:false}),neon.from("worker_due").select("*").eq("worker_id",me.worker_id)]);setRows(a.data||[]);setDue(d.data?.[0]||null)}})()},[]);
+ useEffect(()=>{(async()=>{const p=await neon.from("current_profile").select("*");const me=p.data?.[0];setProfile(me);if(me?.worker_id){const [a,d]=await Promise.all([neon.from("attendance").select("*").eq("worker_id",me.worker_id).order("attendance_date",{ascending:false}),neon.from("worker_due").select("*").eq("id",me.worker_id)]);setRows(a.data||[]);setDue(d.data?.[0]||null)}})()},[]);
  return <div><SectionHeader eyebrow="WORKER PORTAL" title="My Work & Earnings" description="Only your own attendance, advances and due are shown."/><div className="summary-strip"><div><span>Hajira</span><strong>{rows.reduce((s,r)=>s+Number(r.hajira||0),0)}</strong></div><div><span>Gross</span><strong>{money(rows.reduce((s,r)=>s+Number(r.earned_amount||0),0))}</strong></div><div><span>Current Due</span><strong>{money(due?.due_amount)}</strong></div></div><DataTable rows={rows} columns={[{key:"attendance_date",label:"Date"},{key:"project_id",label:"Project"},{key:"hajira",label:"Hajira"},{key:"worker_rate",label:"Rate",render:(r:any)=>money(r.worker_rate)},{key:"earned_amount",label:"Earned",render:(r:any)=>money(r.earned_amount)}]}/></div>
 }
 export function ClientPortal(){
