@@ -1,0 +1,4 @@
+import ModulePage from "./ModulePage";
+export function ForemanPortal(){return <ModulePage title="Foreman Portal" description="Project-scoped daily operations and correction requests." items={["Assigned project only","Enter worker hajira quantities","Enter worker cash payments","Submit and lock operational records","Request corrections after submission"]}/>;}
+export function WorkerPortal(){return <ModulePage title="Worker Portal" description="A worker can view only their own work and payment information." items={["Profile and current assignment","Hajira history","Gross earnings","Daily pocket money / advances","Payment history and current due"]}/>;}
+export function ClientPortal(){return <ModulePage title="Client Portal" description="Client-specific project, measurement, billing and cash receipt visibility." items={["Own projects only","Work items and measurements","Bills and bill items","Cash payment history","Outstanding balance and project progress"]}/>;}
