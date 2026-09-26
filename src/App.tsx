@@ -11,6 +11,8 @@ import Measurements from "./pages/Measurements";
 import Cash from "./pages/Cash";
 import Reports from "./pages/Reports";
 import Operations from "./pages/Operations";
+import CashReceipts from "./pages/CashReceipts";
+import WorkerAdvances from "./pages/WorkerAdvances";
 import {ClientPortal,ForemanPortal,WorkerPortal} from "./pages/Portals";
 
 function Protected(){return <AuthGate><Layout><Routes>
@@ -23,6 +25,8 @@ function Protected(){return <AuthGate><Layout><Routes>
 <Route path="/cash" element={<Cash/>}/>
 <Route path="/reports" element={<Reports/>}/>
 <Route path="/billing" element={<Operations mode="billing"/>}/>
+<Route path="/receipts" element={<CashReceipts/>}/>
+<Route path="/advances" element={<WorkerAdvances/>}/>
 <Route path="/payments" element={<Operations mode="payments"/>}/>
 <Route path="/expenses" element={<Operations mode="expenses"/>}/>
 <Route path="/corrections" element={<Operations mode="corrections"/>}/>
