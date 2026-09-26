@@ -1,14 +1,7 @@
-import SectionHeader from "../components/SectionHeader";
-import DataTable from "../components/DataTable";
-import Badge from "../components/Badge";
-const clients=[
-{id:"C-001",name:"Mr. Hasan",phone:"01811-000001",projects:2,outstanding:185000,status:"Active"},
-{id:"C-002",name:"ABC Holdings",phone:"01811-000002",projects:1,outstanding:120000,status:"Active"},
-{id:"C-003",name:"Mr. Rahman",phone:"01811-000003",projects:1,outstanding:90000,status:"Active"},
-{id:"C-004",name:"XYZ Ltd.",phone:"01811-000004",projects:2,outstanding:90000,status:"Active"}
-];
-export default function Clients(){return <div><SectionHeader eyebrow="CUSTOMERS" title="Clients" description="Client records, project ownership, cash receipts and outstanding balances." action={<button className="primary-btn">+ Add Client</button>}/><div className="toolbar"><input placeholder="Search client or phone..." /><select><option>All clients</option></select></div><DataTable rows={clients} columns={[
-{key:"id",label:"Client ID"},{key:"name",label:"Client",render:r=><strong>{r.name}</strong>},{key:"phone",label:"Phone"},{key:"projects",label:"Projects"},
-{key:"outstanding",label:"Outstanding",render:r=><strong>৳{r.outstanding.toLocaleString()}</strong>},
-{key:"status",label:"Status",render:r=><Badge tone="success">{r.status}</Badge>}
-]}/></div>}
+import {useEffect,useState} from "react"; import SectionHeader from "../components/SectionHeader"; import DataTable from "../components/DataTable"; import Badge from "../components/Badge"; import FormModal from "../components/FormModal"; import {neon} from "../lib/neon";
+const empty={client_code:"",company_name:"",contact_person:"",phone:"",email:"",address:"",status:"ACTIVE",notes:""};
+export default function Clients(){const[rows,setRows]=useState<any[]>([]),[open,setOpen]=useState(false),[edit,setEdit]=useState<any>(null),[form,setForm]=useState<any>(empty),[busy,setBusy]=useState(false),[error,setError]=useState("");
+async function load(){const[c,o]=await Promise.all([neon.from("clients").select("*").order("client_code"),neon.from("client_outstanding").select("id,outstanding")]);const om=Object.fromEntries((o.data||[]).map((x:any)=>[x.id,x.outstanding]));setRows((c.data||[]).map((x:any)=>({...x,outstanding:om[x.id]||0})))} useEffect(()=>{load()},[]);
+function start(r?:any){setEdit(r||null);setForm(r?{...r}:{...empty});setError("");setOpen(true)} async function save(e:any){e.preventDefault();setBusy(true);const q={...form};["id","outstanding","created_at","updated_at"].forEach(k=>delete q[k]);const r=edit?await neon.from("clients").update(q).eq("id",edit.id):await neon.from("clients").insert(q);if(r.error)setError(r.error.message);else{setOpen(false);load()}setBusy(false)}
+const f=(k:string,l:string,req=false,t="text")=><label>{l}<input type={t} value={form[k]??""} required={req} onChange={e=>setForm({...form,[k]:e.target.value})}/></label>;
+return <div><SectionHeader eyebrow="CUSTOMERS" title="Clients" description="Client records, projects and outstanding balances." action={<button className="primary-btn" onClick={()=>start()}>+ Add Client</button>}/><div className="toolbar"><input placeholder="Search client or phone..."/></div><DataTable rows={rows} columns={[{key:"client_code",label:"Client ID"},{key:"company_name",label:"Client",render:r=><strong>{r.company_name}</strong>},{key:"contact_person",label:"Contact"},{key:"phone",label:"Phone"},{key:"outstanding",label:"Outstanding",render:r=><strong>৳{Number(r.outstanding||0).toLocaleString()}</strong>},{key:"status",label:"Status",render:r=><Badge tone={r.status==="ACTIVE"?"success":"neutral"}>{r.status}</Badge>},{key:"id",label:"Actions",render:r=><button onClick={()=>start(r)}>Edit</button>}]}/>{open&&<FormModal title={edit?"Edit Client":"Add Client"} onClose={()=>setOpen(false)} onSubmit={save} busy={busy}>{f("client_code","Client ID",true)}{f("company_name","Company / Client Name",true)}{f("contact_person","Contact Person")}{f("phone","Phone")}{f("email","Email",false,"email")}{f("address","Address")}{f("notes","Notes")}{error&&<div className="form-error full">{error}</div>}</FormModal>}</div>}
