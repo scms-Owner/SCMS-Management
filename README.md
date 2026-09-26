@@ -40,10 +40,10 @@ No database passwords or private connection strings are stored in the frontend r
 
 1. Open the SCMS Management site.
 2. Create the first account from the Sign up screen.
-3. Tell the project administrator that the account has been created.
-4. The account must then be assigned the `ADMIN` role in Neon Auth before protected SCMS data is available.
+3. The first account is automatically offered the initial `ADMIN` profile through the bootstrap rule.
+4. After the first Admin is active, later accounts must be assigned their SCMS role/profile by an Admin.
 
-After the first admin is assigned, the admin can create the remaining user profiles and assign project/worker/client relationships.
+After the first admin is active, the admin can create the remaining user profiles and assign project/worker/client relationships.
 
 ## Database model
 
